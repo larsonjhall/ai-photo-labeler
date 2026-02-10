@@ -211,3 +211,12 @@ resource "aws_iam_role_policy" "lambda_permissions" {
     ]
   })
 }
+
+terraform {
+  backend "s3" {
+    bucket       = "larsonhall-terraform-state-2026"
+    key          = "terraform.tfstate"
+    region       = "us-east-1"
+    use_lockfile = true 
+  }
+}
