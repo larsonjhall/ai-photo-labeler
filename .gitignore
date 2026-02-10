@@ -1,0 +1,13 @@
+# Local .terraform folder (providers/modules)
+.terraform/
+
+# Terraform state files (These contain sensitive data!)
+*.tfstate
+*.tfstate.backup
+
+# Sensitive variables
+*.tfvars
+auth.json
+
+# Lambda zip payloads
+*.zip

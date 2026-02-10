@@ -1,0 +1,14 @@
+{
+  "TranscriptId": {
+    "S": "Job-2309ca4f73604f1dad7541774770425d"
+  },
+  "Sentiment": {
+    "S": "NEUTRAL"
+  },
+  "Text": {
+    "S": "Testing our San Diego podcast pipeline."
+  },
+  "Timestamp": {
+    "S": "2026-02-10 01:26:33.279489"
+  }
+}
