@@ -1,13 +1,19 @@
-# Terraform files
-.terraform/
+# Local terraform directories
+.terraform/*
+
+# State files (Contains sensitive info about your infrastructure)
 *.tfstate
-*.tfstate.backup
-.terraform.lock.hcl
+*.tfstate.*
 
-# Python/OS junk
-__pycache__/
-*.zip
+# Crash logs
+crash.log
+
+# Variables files (If you ever use them)
+*.tfvars
+*.tfvars.json
+
+# Private keys (Your SSH keys!)
+*.pem
+
+# Ignore Mac system files
 .DS_Store
-
-# Sensitive info
-.env
