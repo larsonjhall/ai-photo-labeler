@@ -1,0 +1,13 @@
+# Terraform files
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+
+# Python/OS junk
+__pycache__/
+*.zip
+.DS_Store
+
+# Sensitive info
+.env
