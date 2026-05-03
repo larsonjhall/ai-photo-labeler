@@ -1,0 +1,72 @@
+name: Deploy DentOS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy-backend:
+    name: Build and Deploy Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 | \
+          docker login --username AWS --password-stdin \
+          901504599528.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build Docker image
+        run: |
+          docker build --platform linux/amd64 \
+            -t dentos-backend \
+            ./backend
+
+      - name: Tag and push to ECR
+        run: |
+          docker tag dentos-backend:latest \
+            901504599528.dkr.ecr.us-east-1.amazonaws.com/dentos-backend:latest
+          docker push \
+            901504599528.dkr.ecr.us-east-1.amazonaws.com/dentos-backend:latest
+
+      - name: Deploy to App Runner
+        run: |
+          aws apprunner start-deployment \
+            --service-arn arn:aws:apprunner:us-east-1:901504599528:service/dentos-backend-v2/972319200d47481f990f3f14eb9ac497
+
+  deploy-frontend:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Upload to S3
+        run: |
+          aws s3 cp terraform/index.html \
+            s3://dentos-site-2026/index.html \
+            --content-type "text/html"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id E2O8DY2AW7WUOY \
+            --paths "/*"
